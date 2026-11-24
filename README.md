@@ -60,6 +60,7 @@
 > **升级同理：覆盖 `custom_components/cqsw_water` 整个文件夹、重启 HA 即可。**
 > 资源地址里的 `?v=` 由集成每次启动按「版本号 + 卡片内容指纹」自动生成并写回 Lovelace，不用改 URL、不用清缓存。
 
+要求：Home Assistant **2024.7** 及以上（用到 `StaticPathConfig` 注册卡片静态目录）。
 依赖：无。SM2 / SM3 与 HTTP 请求分别用标准库 `hashlib` / `urllib` 自实现，安装后不会额外拉取任何 Python 包。
 
 > 品牌图标放在 `custom_components/cqsw_water/brand/`（`icon.png` 256×256、`logo.png` 512×512，白底原图）。
