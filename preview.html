@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>重庆水务卡片预览</title>
+<style>
+  :root {
+    --card-background-color: #ffffff;
+    --ha-card-background: #ffffff;
+    --primary-text-color: #1b1d21;
+    --secondary-text-color: #7c828b;
+    --divider-color: rgba(0,0,0,.08);
+    --secondary-background-color: #f2f3f5;
+    --ha-card-border-radius: 18px;
+  }
+  body.dark {
+    --card-background-color: #1c1d21;
+    --ha-card-background: #232529;
+    --primary-text-color: #f2f4f8;
+    --secondary-text-color: #9aa1ab;
+    --divider-color: rgba(255,255,255,.10);
+    --secondary-background-color: #2c2f34;
+  }
+  body {
+    margin: 0; min-height: 100vh;
+    background: var(--secondary-background-color);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+    padding: 36px 20px 60px; box-sizing: border-box;
+    color: var(--primary-text-color);
+  }
+  .toolbar { display: flex; gap: 10px; align-items: center; font-size: 13px; opacity: .85; flex-wrap: wrap; justify-content: center; }
+  .toolbar button, .toolbar a {
+    border: 1px solid var(--divider-color); background: var(--ha-card-background);
+    color: inherit; padding: 6px 14px; border-radius: 999px; cursor: pointer;
+    font-size: 13px; text-decoration: none;
+  }
+  .toolbar a.on { border-color: #1677d2; color: #1677d2; }
+  .frame { width: 100%; max-width: 420px; }
+  .caption { font-size: 12px; text-align: center; opacity: .6; margin-top: 6px; }
+  body.plain { display: block; padding: 10px 0; gap: 0; }
+  body.plain .toolbar, body.plain .caption, body.plain #tip { display: none !important; }
+  body.plain .frame { max-width: 420px; margin: 0 auto; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="theme">切换深色 / 浅色</button>
+    <span>Home Assistant 卡片预览（模拟数据）</span>
+    <a href="?" id="v-main">主页</a>
+    <a href="?view=usage" id="v-usage">用水明细</a>
+    <a href="?view=payment" id="v-payment">缴费记录</a>
+  </div>
+
+  <div class="frame">
+    <cqsw-water-card id="card"></cqsw-water-card>
+    <div class="caption">实际数据来自集成「水表读数」传感器，样式随 HA 主题自动适配</div>
+    <div class="caption" id="tip" hidden style="opacity:.9">
+      卡片脚本没能加载：本页需要联网从 CDN 取 lit（或已安装 Home Assistant 时走内置 lit）。
+    </div>
+  </div>
+
+<script type="module">
+  const states = {
+    "sensor.cqsw_water_demo": {
+      entity_id: "sensor.cqsw_water_demo", state: "287",
+      last_updated: new Date().toISOString(),
+      attributes: {
+          "account": "13800000000",
+          "card_no": "0000000000",
+          "customer_name": "示例用户",
+          "customer_addr": "示例小区 1 栋 101",
+          "customer_type": "居民户表",
+          "water_org": "示例市自来水有限公司",
+          "balance": 0.0,
+          "reading": 287.0,
+          "begin_scale": 269.0,
+          "end_scale": 287.0,
+          "current_fee": 63.0,
+          "current_usage": 18.0,
+          "last_usage": 16.0,
+          "last_reading": 269.0,
+          "tier_usage": 81.0,
+          "now_ladder": "1",
+          "ladder": {
+          "ladder1": "0-260",
+          "ladder2": "261-360",
+          "ladder3": "361及以上"
+          },
+          "total_fee": 1046.5,
+          "year_total_fee": 496.0,
+          "ladder_prices": [3.5, 4.22, 5.9],
+          "last_refresh": "2026-10-31 15:20:00",
+          "statistics": {
+          "months": 18,
+          "total_water": 299.0,
+          "total_cost": 1046.5,
+          "payments": 12
+          },
+          "updated_at": "2026-10-31 15:20:00",
+          "last_pay_time": "2026/9/20 10:20:11",
+          "last_pay_amount": 63.0,
+          "usage_list": [
+          {
+          "month": "2026年09月",
+          "usage": 18.0,
+          "fee": 63.0,
+          "status": "已缴费",
+          "begin": 269.0,
+          "end": 287.0
+          },
+          {
+          "month": "2026年08月",
+          "usage": 16.0,
+          "fee": 56.0,
+          "status": "已缴费",
+          "begin": 253.0,
+          "end": 269.0
+          },
+          {
+          "month": "2026年07月",
+          "usage": 21.0,
+          "fee": 73.5,
+          "status": "已缴费",
+          "begin": 232.0,
+          "end": 253.0
+          },
+          {
+          "month": "2026年06月",
+          "usage": 11.0,
+          "fee": 38.5,
+          "status": "已缴费",
+          "begin": 221.0,
+          "end": 232.0
+          },
+          {
+          "month": "2026年05月",
+          "usage": 14.0,
+          "fee": 49.0,
+          "status": "已缴费",
+          "begin": 207.0,
+          "end": 221.0
+          },
+          {
+          "month": "2026年04月",
+          "usage": 19.0,
+          "fee": 66.5,
+          "status": "已缴费",
+          "begin": 188.0,
+          "end": 207.0
+          },
+          {
+          "month": "2026年03月",
+          "usage": 23.0,
+          "fee": 80.5,
+          "status": "已缴费",
+          "begin": 165.0,
+          "end": 188.0
+          },
+          {
+          "month": "2026年02月",
+          "usage": 17.0,
+          "fee": 59.5,
+          "status": "已缴费",
+          "begin": 148.0,
+          "end": 165.0
+          },
+          {
+          "month": "2026年01月",
+          "usage": 9.0,
+          "fee": 31.5,
+          "status": "已缴费",
+          "begin": 139.0,
+          "end": 148.0
+          },
+          {
+          "month": "2025年12月",
+          "usage": 15.0,
+          "fee": 52.5,
+          "status": "已缴费",
+          "begin": 124.0,
+          "end": 139.0
+          },
+          {
+          "month": "2025年11月",
+          "usage": 20.0,
+          "fee": 70.0,
+          "status": "已缴费",
+          "begin": 104.0,
+          "end": 124.0
+          },
+          {
+          "month": "2025年10月",
+          "usage": 12.0,
+          "fee": 42.0,
+          "status": "已缴费",
+          "begin": 92.0,
+          "end": 104.0
+          },
+          {
+          "month": "2025年09月",
+          "usage": 18.0,
+          "fee": 63.0,
+          "status": "已缴费",
+          "begin": 74.0,
+          "end": 92.0
+          },
+          {
+          "month": "2025年08月",
+          "usage": 16.0,
+          "fee": 56.0,
+          "status": "已缴费",
+          "begin": 58.0,
+          "end": 74.0
+          },
+          {
+          "month": "2025年07月",
+          "usage": 21.0,
+          "fee": 73.5,
+          "status": "已缴费",
+          "begin": 37.0,
+          "end": 58.0
+          },
+          {
+          "month": "2025年06月",
+          "usage": 13.0,
+          "fee": 45.5,
+          "status": "已缴费",
+          "begin": 24.0,
+          "end": 37.0
+          },
+          {
+          "month": "2025年05月",
+          "usage": 17.0,
+          "fee": 59.5,
+          "status": "已缴费",
+          "begin": 7.0,
+          "end": 24.0
+          },
+          {
+          "month": "2025年04月",
+          "usage": 19.0,
+          "fee": 66.5,
+          "status": "已缴费",
+          "begin": -12.0,
+          "end": 7.0
+          }
+          ],
+          "payment_list": [
+          {
+          "time": "2026/9/20 10:20:11",
+          "amount": 63.0,
+          "channel": "支付宝",
+          "month": ""
+          },
+          {
+          "time": "2026/8/23 10:23:11",
+          "amount": 56.64,
+          "channel": "支付宝",
+          "month": ""
+          },
+          {
+          "time": "2026/7/21 10:21:11",
+          "amount": 73.5,
+          "channel": "微信",
+          "month": ""
+          },
+          {
+          "time": "2026/6/19 10:29:11",
+          "amount": 38.5,
+          "channel": "招商银行",
+          "month": ""
+          },
+          {
+          "time": "2026/5/22 10:22:11",
+          "amount": 49.0,
+          "channel": "支付宝",
+          "month": ""
+          },
+          {
+          "time": "2026/4/20 10:20:11",
+          "amount": 66.5,
+          "channel": "微信",
+          "month": ""
+          },
+          {
+          "time": "2026/3/21 10:21:11",
+          "amount": 80.5,
+          "channel": "招商银行",
+          "month": ""
+          },
+          {
+          "time": "2026/2/19 10:29:11",
+          "amount": 59.5,
+          "channel": "支付宝",
+          "month": ""
+          },
+          {
+          "time": "2026/1/23 10:23:11",
+          "amount": 31.5,
+          "channel": "微信",
+          "month": ""
+          },
+          {
+          "time": "2025/12/20 10:20:11",
+          "amount": 52.5,
+          "channel": "支付宝",
+          "month": ""
+          },
+          {
+          "time": "2025/11/21 10:21:11",
+          "amount": 70.0,
+          "channel": "招商银行",
+          "month": ""
+          },
+          {
+          "time": "2025/10/19 10:29:11",
+          "amount": 42.0,
+          "channel": "微信",
+          "month": ""
+          }
+          ],
+          "current_fee_items": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "fee_items_by_month": {
+          "2026年09月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年08月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年07月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年06月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年05月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年04月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年03月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年02月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2026年01月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2025年12月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2025年11月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ],
+          "2025年10月": [
+          {
+          "item": "自来水费",
+          "name": "第一阶梯",
+          "price": 3.5,
+          "amount": 18.0,
+          "money": 45.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第二阶梯",
+          "price": 4.22,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "自来水费",
+          "name": "第三阶梯",
+          "price": 5.9,
+          "amount": 0.0,
+          "money": 0.0
+          },
+          {
+          "item": "污水处理费",
+          "name": "",
+          "price": 1.0,
+          "amount": 18.0,
+          "money": 18.0
+          }
+          ]
+          }
+          }
+    }
+  };
+
+  const qs = new URLSearchParams(location.search);
+  if (qs.get("theme") === "dark") document.body.classList.add("dark");
+  if (qs.get("plain") === "1") document.body.classList.add("plain");
+  const zoom = parseFloat(qs.get("zoom") || "");
+  if (zoom > 0) document.documentElement.style.zoom = String(zoom);
+
+  customElements.whenDefined("cqsw-water-card").then(() => {
+    const card = document.getElementById("card");
+    card.setConfig({ entity: "sensor.cqsw_water_demo" });
+    card.hass = {
+      states,
+      callService: (d, s, data) => console.log("callService", d, s, data),
+    };
+    const view = qs.get("view");
+    if (view === "editor") {
+      // 演示卡片编辑器 (可视化配置界面)
+      card.hidden = true;
+      const ed = document.createElement("cqsw-water-card-editor");
+      card.parentNode.insertBefore(ed, card);
+      ed.setConfig({ entity: "sensor.cqsw_water_demo" });
+      ed.hass = {
+        states,
+        callWS: () => Promise.resolve([
+          { entity_id: "sensor.cqsw_water_demo", platform: "cqsw_water" }
+        ]),
+      };
+    } else if (view && view !== "main" && typeof card._go === "function") {
+      card._go(view);
+    }
+  });
+
+  document.getElementById("theme").addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+  });
+  const view = qs.get("view") || "main";
+  const cur = document.getElementById("v-" + view);
+  if (cur) cur.classList.add("on");
+
+  setTimeout(() => {
+    if (!customElements.get("cqsw-water-card")) {
+      const tip = document.getElementById("tip");
+      if (tip) tip.hidden = false;
+    }
+  }, 3000);
+</script>
+<script type="module" src="./custom_components/cqsw_water/www/cqsw-water-card.js"></script>
+</body>
+</html>

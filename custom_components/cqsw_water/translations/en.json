@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Chongqing Water",
+        "description": "Enter your login account and password for the water service (kf.cncqsw.com). Data refreshes automatically at the configured interval and is cached locally. Multiple accounts are supported. Tier prices default to Chongqing central urban district residential composite prices (water supply + sewage), for reference only - please adjust to your local published tariffs.",
+        "data": {
+          "username": "Account",
+          "password": "Password",
+          "scan_interval": "Auto refresh interval (hours, 12-48)",
+          "tier1_price": "Tier 1 composite price (CNY/m³)",
+          "tier2_price": "Tier 2 composite price (CNY/m³)",
+          "tier3_price": "Tier 3 composite price (CNY/m³)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure",
+        "description": "Change account, password, refresh interval or tier prices (defaults are Chongqing central urban district residential prices, for reference only).",
+        "data": {
+          "username": "Account",
+          "password": "Password",
+          "scan_interval": "Auto refresh interval (hours, 12-48)",
+          "tier1_price": "Tier 1 composite price (CNY/m³)",
+          "tier2_price": "Tier 2 composite price (CNY/m³)",
+          "tier3_price": "Tier 3 composite price (CNY/m³)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Login failed, please check your account or password."
+    },
+    "abort": {
+      "already_configured": "This account is already configured. Add the integration again with another account to use multiple accounts."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuration"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# 自家账号的缓存文件不要提交（文件名里带户号）
+cqsw_water_data_*.json
+cncqsw_water_data.json
